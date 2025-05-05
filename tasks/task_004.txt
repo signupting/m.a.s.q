@@ -1,0 +1,23 @@
+# Task ID: 4
+# Title: How It Works Section Implementation
+# Status: done
+# Dependencies: 2
+# Priority: medium
+# Description: Create the 'How It Works' section with 4-step horizontal infographic showing the MASQ process.
+# Details:
+1. Create HowItWorks component
+2. Import and optimize pg2-bg.jpg as background
+3. Add 'How MASQ Works' heading with appropriate styling
+4. Create 4-step horizontal infographic with steps:
+   - Wallet Connect
+   - Deposit
+   - Mixing Engine
+   - Clean Output
+5. Design minimalist icons for each step
+6. Implement optional glowing arrow line connecting steps
+7. Add subtle animations for step transitions
+8. Ensure responsive behavior (convert to vertical layout on mobile)
+9. Implement proper spacing and alignment between steps
+
+# Test Strategy:
+Verify background image loads correctly. Test responsive behavior of the infographic (horizontal on desktop, vertical on mobile). Check that all icons and text are clearly visible. Ensure animations work correctly across browsers.

@@ -1,0 +1,40 @@
+Project Name: MASQ – Solana Mixer
+Website Type: Crypto Landing Page (Single Scroll)
+Tone/Feel: Mysterious, luxurious, privacy-driven, sleek hacker aesthetic
+Theme Colours: Matte black, neon green, deep violet, greyscale
+Fonts: Stark sans-serif (e.g., Inter, Space Grotesk)
+Assets:
+- hero-bg.png (Hero background)
+- pg2-bg.jpg ("How it works" background)
+- solana-coin-into-void-bg.png (Feature/CTA background)
+
+Sections:
+1.  **Hero Section**
+    *   Background: Use hero-bg.png
+    *   Text: "Vanishing Starts Here" (embedded in image)
+    *   CTA Button: "Enter MASQ" (scrolls to next section)
+    *   Optional Subtext: "Anonymous. Secure. Solana-powered."
+
+2.  **How It Works Section**
+    *   Background: Use pg2-bg.jpg
+    *   Heading: "How MASQ Works"
+    *   Content: 4-step horizontal infographic (Wallet Connect -> Deposit -> Mixing Engine -> Clean Output)
+    *   Visuals: Minimalist icons/graphics for each step. Optional glowing arrow line connecting steps.
+
+3.  **Visual Feature/CTA Section**
+    *   Background: Use solana-coin-into-void-bg.png
+    *   Overlay Text (Optional): "Send. Mix. Vanish."
+    *   CTA Button: "Try MASQ Now"
+
+4.  **Footer**
+    *   Background: Black
+    *   Links: Privacy Policy | GitHub | Telegram | X (Twitter) (small white text)
+    *   Logo: Small MASQ logo (bottom-left)
+    *   Copyright: "© 2025 MASQ. No logs. No trace." (small white text)
+
+Core Functionality:
+- Single-page scrolling navigation activated by CTA buttons.
+- Responsive design for desktop and mobile.
+- Visually appealing layout adhering to the specified theme.
+- Integration of provided image assets.
+- Clear presentation of the 4-step process. 

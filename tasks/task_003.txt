@@ -1,0 +1,19 @@
+# Task ID: 3
+# Title: Hero Section Implementation
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Develop the hero section with background image, main heading, CTA button, and optional subtext.
+# Details:
+1. Create Hero component
+2. Import and optimize hero-bg.png as background
+3. Add heading 'Vanishing Starts Here' with appropriate styling
+4. Implement 'Enter MASQ' CTA button with hover effects
+5. Add optional subtext 'Anonymous. Secure. Solana-powered.'
+6. Ensure text is properly embedded in image or overlaid with appropriate contrast
+7. Add subtle animations for text and button appearance
+8. Implement responsive adjustments for different screen sizes
+9. Optimize image loading with proper techniques (lazy loading, webp format)
+
+# Test Strategy:
+Verify hero background loads correctly. Test CTA button functionality for scrolling to next section. Check text legibility across devices. Ensure responsive design maintains visual appeal on mobile and desktop. Measure load time for optimized images.

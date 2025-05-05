@@ -1,0 +1,55 @@
+.featureSection {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/backgrounds/solana-coin-into-void-bg.png');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.overlayText {
+  font-size: 2.2rem;
+  margin-bottom: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+  z-index: 1;
+}
+
+.ctaButton {
+  padding: 1.1rem 2.2rem;
+  background-color: #9400D3;
+  color: #fff;
+  border: 2px solid #bf71ff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  text-shadow: none;
+  z-index: 1;
+}
+
+.ctaButton:hover {
+  background-color: #8A2BE2;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(148, 0, 211, 0.6);
+}
+
+/* Basic Media Query for smaller screens */
+@media (max-width: 768px) {
+  .overlayText {
+    font-size: 1.8rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .ctaButton {
+    padding: 0.9rem 1.8rem;
+    font-size: 1.1rem;
+  }
+} 

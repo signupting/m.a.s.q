@@ -1,0 +1,70 @@
+.footer {
+  min-height: 20vh;
+  padding: 2rem 1rem;
+  background-color: #000;
+  color: #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.linksContainer {
+  margin-bottom: 1.5rem; /* Increased space */
+}
+
+.footerLink {
+  color: #fff;
+  margin: 0 0.75rem; /* Increased space */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footerLink:hover {
+  color: #00ff00; /* Neon green on hover */
+}
+
+.bottomText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.logoPlaceholder {
+  /* Placeholder for small logo */
+  width: 20px;
+  height: 20px;
+  /* background-color: #eee; Remove if using an actual image */
+  margin-right: 0.75rem;
+  display: inline-block; /* Or block if img */
+}
+
+/* Basic Media Query for smaller screens */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .linksContainer {
+    margin-bottom: 1rem;
+  }
+
+  .footerLink {
+    margin: 0 0.5rem;
+    display: inline-block; /* Prevent awkward wrapping */
+    margin-bottom: 0.5rem; /* Add space if they wrap */
+  }
+
+  .bottomText {
+    flex-direction: column; /* Stack logo and text */
+  }
+
+  .logoPlaceholder {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+} 
