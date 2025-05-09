@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASQ - Additional Pages</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Roboto+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .neon-green {
+            color: #3aff16;
+        }
+        
+        .neon-green-border {
+            border-color: #3aff16;
+        }
+        
+        .neon-glow {
+            text-shadow: 0 0 5px rgba(58, 255, 22, 0.5), 0 0 10px rgba(58, 255, 22, 0.3);
+        }
+        
+        .box-glow {
+            box-shadow: 0 0 10px rgba(58, 255, 22, 0.3), 0 0 20px rgba(58, 255, 22, 0.1);
+        }
+        
+        .matrix-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .matrix-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="0" y="10" fill="rgba(58, 255, 22, 0.07)">10110</text><text x="10" y="20" fill="rgba(58, 255, 22, 0.07)">01001</text><text x="20" y="30" fill="rgba(58, 255, 22, 0.07)">10110</text><text x="30" y="40" fill="rgba(58, 255, 22, 0.07)">01001</text><text x="40" y="50" fill="rgba(58, 255, 22, 0.07)">10110</text><text x="50" y="60" fill="rgba(58, 255, 22, 0.07)">01001</text><text x="60" y="70" fill="rgba(58, 255, 22, 0.07)">10110</text><text x="70" y="80" fill="rgba(58, 255, 22, 0.07)">01001</text><text x="80" y="90" fill="rgba(58, 255, 22, 0.07)">10110</text><text x="90" y="100" fill="rgba(58, 255, 22, 0.07)">01001</text></svg>');
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        .code-window {
+            background-color: #1a1a1a;
+            border-radius: 6px;
+            border: 1px solid rgba(58, 255, 22, 0.3);
+        }
+        
+        .code-header {
+            border-bottom: 1px solid rgba(58, 255, 22, 0.3);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .code-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .code-content {
+            padding: 16px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        /* Smooth scrolling for anchors */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom comparison table styles */
+        .comparison-table th, .comparison-table td {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+        }
+        
+        .comparison-table th {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .comparison-table tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .masq-column {
+            background-color: rgba(58, 255, 22, 0.05);
+        }
+        
+        /* Progress bar styling */
+        .progress-bar {
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #3aff16;
+            border-radius: 3px;
+            width: 74.35%;
+        }
+        
+        /* Section transitions */
+        .section {
+            position: relative;
+            padding: 80px 0;
+        }
+        
+        /* Diagram element */
+        .diagram-arrow {
+            position: relative;
+            height: 4px;
+            background-color: rgba(58, 255, 22, 0.4);
+        }
+        
+        .diagram-arrow::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -8px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 0 10px 16px;
+            border-color: transparent transparent transparent rgba(58, 255, 22, 0.4);
+        }
+        
+        /* For email input */
+        .email-input {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(58, 255, 22, 0.3);
+            padding: 12px 16px;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .email-input:focus {
+            border-color: #3aff16;
+            box-shadow: 0 0 10px rgba(58, 255, 22, 0.2);
+        }
+        
+        /* Section divider */
+        .section-divider {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, rgba(58, 255, 22, 0) 0%, rgba(58, 255, 22, 0.5) 50%, rgba(58, 255, 22, 0) 100%);
+            margin: 40px 0;
+        }
+        
+        /* Button styles */
+        .masq-button {
+            display: inline-block;
+            padding: 12px 24px;
+            color: black;
+            background-color: #3aff16;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .masq-button:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 15px rgba(58, 255, 22, 0.5);
+        }
+        
+        .masq-button-outline {
+            display: inline-block;
+            padding: 12px 24px;
+            color: #3aff16;
+            background-color: transparent;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: 2px solid #3aff16;
+            cursor: pointer;
+        }
+        
+        .masq-button-outline:hover {
+            background-color: rgba(58, 255, 22, 0.1);
+            box-shadow: 0 0 15px rgba(58, 255, 22, 0.3);
+        }
+        
+        /* For step numbers */
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(58, 255, 22, 0.2);
+            color: #3aff16;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border: 1px solid #3aff16;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- How MASQ Works Section (Page 2) -->
+    <section id="how-masq-works" class="section matrix-bg py-24">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                <span class="neon-green">How</span> MASQ <span class="neon-green">Works</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                <!-- Step 1: Connect & Deposit -->
+                <div class="bg-black bg-opacity-70 p-8 border border-gray-800 rounded-lg">
+                    <div class="step-number">1</div>
+                    <h3 class="text-2xl font-bold mb-4 neon-green">Connect & Deposit</h3>
+                    <p class="text-gray-300 mb-6">
+                        User connects their Solana wallet and deposits into a fixed-denomination pool using generated commitment credentials.
+                    </p>
+                    
+                    <div class="code-window mb-4">
+                        <div class="code-header">
+                            <div class="code-circle bg-red-500"></div>
+                            <div class="code-circle bg-yellow-500 ml-2"></div>
+                            <div class="code-circle bg-green-500 ml-2"></div>
+                            <div class="ml-4 text-xs text-gray-400">deposit.js</div>
+                        </div>
+                        <div class="code-content text-sm">
+                            <pre><code class="language-javascript">const masqClient = await MasqClient.connect(wallet);
+const { commitmentHash, secrets } = 
+    await masqClient.generateCommitment();
+const tx = await masqClient.deposit({
+  pool: "sol_1",
+  amount: new BN(1_000_000_000), // 1 SOL
+  commitmentHash
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: MASQ Mixes Your Funds -->
+                <div class="bg-black bg-opacity-70 p-8 border border-gray-800 rounded-lg">
+                    <div class="step-number">2</div>
+                    <h3 class="text-2xl font-bold mb-4 neon-green">MASQ Mixes Your Funds</h3>
+                    <p class="text-gray-300 mb-6">
+                        Funds join a pool of identical inputs. MASQ creates a Merkle tree with randomized timing and generates a nullifier for secure unlinkability.
+                    </p>
+                    
+                    <div class="mb-4 relative box-glow rounded-lg overflow-hidden">
+                        <div class="bg-opacity-30 bg-black p-4 rounded-lg">
+                            <!-- Simplified Diagram -->
+                            <div class="flex flex-col items-center">
+                                <div class="px-4 py-2 border neon-green-border rounded flex items-center justify-center mb-4">
+                                    <span class="neon-green">Input Pool</span>
+                                </div>
+                                <div class="w-full flex justify-center mb-4">
+                                    <div class="diagram-arrow w-1/2"></div>
+                                </div>
+                                <div class="px-4 py-2 border neon-green-border rounded flex items-center justify-center mb-4 w-full">
+                                    <span class="neon-green">ZK-Proof Mixer</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 w-full">
+                                    <div class="col-span-2 text-center text-sm text-gray-400 mb-2">Randomized Timing</div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-full flex justify-center mb-2">
+                                            <div class="diagram-arrow w-1/2"></div>
+                                        </div>
+                                        <div class="px-2 py-1 border border-gray-700 rounded text-center text-xs">
+                                            Merkle Tree
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-full flex justify-center mb-2">
+                                            <div class="diagram-arrow w-1/2"></div>
+                                        </div>
+                                        <div class="px-2 py-1 border border-gray-700 rounded text-center text-xs">
+                                            Nullifier Hash
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Withdraw to Any Address -->
+                <div class="bg-black bg-opacity-70 p-8 border border-gray-800 rounded-lg">
+                    <div class="step-number">3</div>
+                    <h3 class="text-2xl font-bold mb-4 neon-green">Withdraw to Any Address</h3>
+                    <p class="text-gray-300 mb-6">
+                        Withdrawal occurs from a different wallet using ZK proofs—no link to the deposit remains.
+                    </p>
+                    
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-circle bg-red-500"></div>
+                            <div class="code-circle bg-yellow-500 ml-2"></div>
+                            <div class="code-circle bg-green-500 ml-2"></div>
+                            <div class="ml-4 text-xs text-gray-400">withdraw.js</div>
+                        </div>
+                        <div class="code-content text-sm">
+                            <pre><code class="language-javascript">const recipientWallet = new Wallet(...);
+const masqClient = await MasqClient.connect(
+    recipientWallet
+);
+const proof = await masqClient.generateWithdrawalProof({
+  secrets,
+  recipient: recipientWallet.publicKey,
+  pool: "sol_1"
+});
+const tx = await masqClient.withdraw({ proof });</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Comparison Table Section (Page 3) -->
+    <section id="comparison" class="section py-24">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-16 text-center">
+                How MASQ <span class="neon-green">Stacks Up</span>
+            </h2>
+            
+            <div class="overflow-x-auto">
+                <table class="comparison-table w-full mb-8">
+                    <thead>
+                        <tr class="text-left">
+                            <th class="text-gray-400">Feature</th>
+                            <th class="masq-column neon-green">MASQ</th>
+                            <th>Tornado Cash</th>
+                            <th>Railgun</th>
+                            <th>Others</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-gray-400">Blockchain</td>
+                            <td class="masq-column font-bold">Solana</td>
+                            <td>Ethereum</td>
+                            <td>Ethereum & EVM</td>
+                            <td>Various</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Transaction Speed</td>
+                            <td class="masq-column font-bold">3–5 seconds</td>
+                            <td>Minutes to hours</td>
+                            <td>Minutes</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Fee Structure</td>
+                            <td class="masq-column font-bold">Ultra-low (< $0.01)</td>
+                            <td>High ($5–100+)</td>
+                            <td>Medium–High</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Privacy Technology</td>
+                            <td class="masq-column font-bold">ZK + Randomized Timing</td>
+                            <td>ZK-SNARKs</td>
+                            <td>ZK-SNARKs</td>
+                            <td>Various</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Rotating Relayers</td>
+                            <td class="masq-column font-bold">Yes</td>
+                            <td>No</td>
+                            <td>Limited</td>
+                            <td>Rarely</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Anti-Temporal Analysis</td>
+                            <td class="masq-column font-bold">Advanced</td>
+                            <td>Basic</td>
+                            <td>Limited</td>
+                            <td>Basic/None</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">User Interface</td>
+                            <td class="masq-column font-bold">Streamlined</td>
+                            <td>Complex</td>
+                            <td>Moderate</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-400">Regulatory Design</td>
+                            <td class="masq-column font-bold">Privacy-by-design</td>
+                            <td>Sanctioned</td>
+                            <td>Mixed</td>
+                            <td>Variable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-gray-400 italic">
+                    "MASQ doesn't just iterate on existing privacy solutions—it fundamentally reimagines what's possible when privacy meets Solana's performance."
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Whitepaper Section (Page 4) -->
+    <section id="whitepaper" class="section matrix-bg py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-8">
+                    <span class="neon-green">Dive Deeper</span> into MASQ
+                </h2>
+                
+                <p class="text-xl text-gray-300 mb-12">
+                    Learn how MASQ leverages ZK, randomized timing, and Solana's speed to enable unlinkable transactions.
+                </p>
+                
+                <div class="bg-black bg-opacity-80 p-8 border border-gray-800 rounded-lg mb-12 box-glow">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-file-pdf text-5xl neon-green mr-6"></i>
+                        <div class="text-left">
+                            <h3 class="text-xl font-bold mb-1">MASQ Technical Whitepaper</h3>
+                            <p class="text-gray-400">A comprehensive analysis of our ZK-based privacy protocol</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mt-6">
+                        <button class="masq-button">
+                            <i class="fas fa-download mr-2"></i> Read the Whitepaper
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-black bg-opacity-70 p-6 border border-gray-800 rounded-lg">
+                        <i class="fas fa-shield-alt text-2xl neon-green mb-4"></i>
+                        <h3 class="text-lg font-bold mb-2">Privacy First</h3>
+                        <p class="text-gray-400 text-sm">
+                            Our ZK implementation ensures complete transaction unlinkability
+                        </p>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-70 p-6 border border-gray-800 rounded-lg">
+                        <i class="fas fa-bolt text-2xl neon-green mb-4"></i>
+                        <h3 class="text-lg font-bold mb-2">Solana Speed</h3>
+                        <p class="text-gray-400 text-sm">
+                            Leveraging Solana for sub-5 second transaction finality
+                        </p>
+                    </div>
+                    
+                    <div class="bg-black bg-opacity-70 p-6 border border-gray-800 rounded-lg">
+                        <i class="fas fa-random text-2xl neon-green mb-4"></i>
+                        <h3 class="text-lg font-bold mb-2">Temporal Protection</h3>
+                        <p class="text-gray-400 text-sm">
+                            Randomized timing mechanisms defeat time-correlation attacks
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Beta Signup Section (Page 5) -->
+    <section id="beta" class="section py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-4xl font-bold mb-4 text-center neon-green neon-glow">
+                    Be First to Mix.
+                </h2>
+                
+                <p class="text-xl text-gray-300 mb-12 text-center">
+                    Get early access to MASQ's beta—experience anonymous transfers before anyone else.
+                </p>
+                
+                <div class="bg-black bg-opacity-80 p-8 border neon-green-border border-opacity-30 rounded-lg box-glow">
+                    <form class="mb-8">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <input 
+                                type="email" 
+                                placeholder="Enter your email address" 
+                                class="email-input flex-grow rounded-md" 
+                                required 
+                            />
+                            <button type="submit" class="masq-button whitespace-nowrap">
+                                Join Beta
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="mb-4">
+                        <div class="progress-bar mb-2">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Beta Launch: 74% Complete</span>
+                            <span class="neon-green">7,435 users already joined</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-800 pt-6 mt-6">
+                        <div class="flex items-start mb-4">
+                            <i class="far fa-check-circle neon-green mt-1 mr-3"></i>
+                            <p class="text-gray-300 text-sm">
+                                <span class="font-bold">Priority Access:</span> Beta users will be first to access the protocol
+                            </p>
+                        </div>
+                        <div class="flex items-start mb-4">
+                            <i class="far fa-check-circle neon-green mt-1 mr-3"></i>
+                            <p class="text-gray-300 text-sm">
+                                <span class="font-bold">Fee Discounts:</span> Beta users receive fee discounts for the first 3 months
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="far fa-check-circle neon-green mt-1 mr-3"></i>
+                            <p class="text-gray-300 text-sm">
+                                <span class="font-bold">Direct Support:</span> Get direct access to the MASQ developer team
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-gray-400 text-sm">
+                        <i class="fas fa-lock mr-2 neon-green"></i>
+                        We value your privacy. Your email will never be shared or sold.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Prism.js for code highlighting
+        if (typeof Prism !== 'undefined') {
+            Prism.highlightAll();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASQ: Solana-Native Privacy Mixer - Whitepaper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #3aff16;
+            --dark-bg: #000000;
+            --dark-bg-alt: #111111;
+            --text-primary: #f5f5f5;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+        
+        * {
+            font-family: 'Space Mono', monospace;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--neon-green);
+            font-weight: 700;
+        }
+        
+        .section {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(58, 255, 22, 0.2);
+        }
+        
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .neon-glow {
+            text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+        }
+        
+        .code-block {
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--neon-green);
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+        
+        .matrix-bg {
+            position: relative;
+        }
+        
+        .matrix-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgogIDxkZWZzPgogICAgPHBhdHRlcm4gaWQ9InBhdHRlcm4iIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxjaXJjbGUgY3g9IjEiIGN5PSIxIiByPSIwLjUiIGZpbGw9IiMzYWZmMTYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIiAvPgo8L3N2Zz4=');
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        table th {
+            background-color: rgba(58, 255, 22, 0.1);
+            color: var(--neon-green);
+            font-weight: bold;
+            text-align: left;
+            padding: 0.75rem;
+        }
+        
+        table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .masq-column {
+            background-color: rgba(58, 255, 22, 0.1);
+            font-weight: bold;
+        }
+        
+        .glossary-term {
+            color: var(--neon-green);
+            cursor: help;
+            text-decoration: underline dotted;
+        }
+        
+        .diagram {
+            background-color: var(--dark-bg-alt);
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(58, 255, 22, 0.3);
+        }
+        
+        .diagram-header {
+            color: var(--neon-green);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .toc-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: block;
+            padding: 0.25rem 0;
+        }
+        
+        .toc-link:hover {
+            color: var(--neon-green);
+        }
+        
+        blockquote {
+            border-left: 2px solid var(--neon-green);
+            padding-left: 1rem;
+            margin-left: 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .footnote {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .cover {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .version {
+            position: absolute;
+            bottom: 2rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Custom styling for the "How MASQ Works" section with step numbers */
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--neon-green);
+            color: black;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        /* Architecture diagram connectors */
+        .connector {
+            border-left: 2px dashed var(--neon-green);
+            height: 2rem;
+            margin-left: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Cover Page -->
+        <section id="cover" class="cover matrix-bg">
+            <div class="mb-4">
+                <i class="fas fa-mask text-5xl" style="color: #3aff16;"></i>
+            </div>
+            <h1 class="text-6xl mb-6 neon-glow tracking-widest">M.A.S.Q.</h1>
+            <h2 class="text-2xl mb-10">Mix. Anonymous. Secure. Quick.</h2>
+            <p class="text-xl mb-4">Solana-Native Privacy Mixer</p>
+            <p class="text-xl mb-16">Technical Whitepaper</p>
+            <p class="version">Version 1.0 - May 2025</p>
+        </section>
+
+        <!-- Table of Contents -->
+        <section id="toc" class="section py-10">
+            <h2 class="text-2xl mb-6">Table of Contents</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <a href="#abstract" class="toc-link">1. Abstract</a>
+                    <a href="#introduction" class="toc-link">2. Introduction</a>
+                    <a href="#background" class="toc-link">3. Background & Motivation</a>
+                    <a href="#architecture" class="toc-link">4. Technical Architecture</a>
+                    <a href="#mechanism" class="toc-link">5. Mechanism Design</a>
+                    <a href="#zk-implementation" class="toc-link">6. Zero-Knowledge Implementation</a>
+                </div>
+                <div>
+                    <a href="#how-masq-works" class="toc-link">7. How MASQ Works</a>
+                    <a href="#security" class="toc-link">8. Security Considerations</a>
+                    <a href="#comparison" class="toc-link">9. Comparison with Other Solutions</a>
+                    <a href="#regulatory" class="toc-link">10. Regulatory Approach</a>
+                    <a href="#roadmap" class="toc-link">11. Roadmap</a>
+                    <a href="#conclusion" class="toc-link">12. Conclusion</a>
+                    <a href="#references" class="toc-link">13. References</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Abstract -->
+        <section id="abstract" class="section py-10">
+            <h2 class="text-2xl mb-4">1. Abstract</h2>
+            <p class="mb-4">
+                MASQ introduces a zero-knowledge proof-based privacy mixer native to the Solana blockchain. By utilizing Solana's high-throughput 
+                capabilities with advanced cryptographic techniques, MASQ enables truly private transactions without sacrificing performance. This 
+                whitepaper details the architecture, implementation, and security considerations of the MASQ protocol.
+            </p>
+            <p>
+                Unlike existing solutions that compromise on either privacy, speed, or decentralization, MASQ leverages Solana's unique infrastructure 
+                to deliver ultra-low-cost, high-speed anonymity with advanced protections against temporal and correlation analyses. Through a combination 
+                of zero-knowledge proofs, randomized timing mechanisms, and rotating relayer networks, MASQ establishes a new standard for on-chain privacy.
+            </p>
+        </section>
+
+        <!-- Introduction -->
+        <section id="introduction" class="section py-10">
+            <h2 class="text-2xl mb-4">2. Introduction</h2>
+            <p class="mb-4">
+                Blockchain technology, with its inherent transparency, creates a fundamental tension between public verifiability and individual privacy. 
+                While public ledgers enable trustless verification, they simultaneously expose all transaction details, creating significant privacy concerns 
+                for users and institutions alike.
+            </p>
+            <p class="mb-4">
+                Existing privacy solutions on other blockchains face multiple challenges:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>High transaction fees limiting accessibility</li>
+                <li>Slow processing times reducing practical utility</li>
+                <li>Limited resistance to temporal analysis</li>
+                <li>Regulatory uncertainty leading to potential sanctions</li>
+                <li>Difficult user experiences deterring adoption</li>
+            </ul>
+            <p class="mb-4">
+                MASQ addresses these challenges by providing a Solana-native privacy solution that harnesses the blockchain's high throughput, ultra-low fees, 
+                and robust infrastructure to deliver a superior privacy experience.
+            </p>
+            <blockquote class="mb-4">
+                "Privacy isn't a feature. It's your right." — MASQ Protocol
+            </blockquote>
+            <p>
+                In this paper, we detail the technical implementation of MASQ, its security guarantees, and how it establishes a new standard for 
+                on-chain privacy while maintaining compliance with evolving regulatory frameworks.
+            </p>
+        </section>
+
+        <!-- Background & Motivation -->
+        <section id="background" class="section py-10">
+            <h2 class="text-2xl mb-4">3. Background & Motivation</h2>
+            <p class="mb-4">
+                The need for financial privacy is fundamental. Traditional financial systems incorporate privacy by default, with transaction details known only 
+                to the involved parties and authorized regulators. Blockchain's radical transparency disrupts this norm, making all transaction details public.
+            </p>
+            <p class="mb-4">
+                Privacy mixers emerged as a solution to this problem, using various techniques to break the on-chain link between source and destination addresses. 
+                However, existing implementations suffer from several shortcomings:
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">3.1 Problems with Existing Mixers</h3>
+            <ul class="list-disc pl-6 mb-4">
+                <li>
+                    <span class="text-green-500 font-bold">High Costs:</span> 
+                    Ethereum-based solutions like Tornado Cash require users to pay significant gas fees, often ranging from $5 to over $100 
+                    depending on network congestion.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Speed Limitations:</span> 
+                    Transaction finality on many networks takes minutes or hours, reducing practical usability for time-sensitive operations.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Temporal Analysis Vulnerability:</span> 
+                    Many mixers remain susceptible to statistical analysis based on transaction timing, particularly when liquidity pools are limited.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Regulatory Challenges:</span> 
+                    Some mixers have faced sanctions due to their design and failure to accommodate legitimate regulatory concerns.
+                </li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">3.2 Why Solana?</h3>
+            <p class="mb-4">
+                Solana provides an ideal foundation for a next-generation privacy mixer due to several key advantages:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>
+                    <span class="text-green-500 font-bold">Transaction Speed:</span> 
+                    Sub-second finality enables almost instant private transfers.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Ultra-low Fees:</span> 
+                    Transaction costs below $0.01 make privacy accessible to all users regardless of transaction size.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Programmability:</span> 
+                    Solana's programming model allows for sophisticated zero-knowledge implementations.
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Growing Ecosystem:</span> 
+                    The expanding Solana ecosystem creates natural cover traffic and liquidity that enhances privacy pool effectiveness.
+                </li>
+            </ul>
+            <p>
+                MASQ leverages these advantages to create a privacy mixer that addresses the limitations of existing solutions while establishing 
+                a foundation for sustainable, compliant privacy on the Solana blockchain.
+            </p>
+        </section>
+
+        <!-- Technical Architecture -->
+        <section id="architecture" class="section py-10">
+            <h2 class="text-2xl mb-4">4. Technical Architecture</h2>
+            <p class="mb-4">
+                MASQ employs a layered architecture that combines zero-knowledge proofs with Solana's high-performance infrastructure to enable 
+                private transactions with strong security guarantees and minimal overhead.
+            </p>
+            
+            <div class="diagram">
+                <div class="diagram-header">MASQ Protocol Architecture</div>
+                <div class="text-center">
+                    <div class="bg-gray-900 p-4 rounded-t-lg border-b border-green-500">
+                        <span class="text-green-500 font-bold">User Interface Layer</span>
+                        <div class="text-sm text-gray-400">Web Client, Mobile App, SDK</div>
+                    </div>
+                    <div class="connector mx-auto"></div>
+                    <div class="bg-gray-900 p-4 border-b border-green-500">
+                        <span class="text-green-500 font-bold">Application Layer</span>
+                        <div class="text-sm text-gray-400">Deposit/Withdraw Management, Commitment Generation</div>
+                    </div>
+                    <div class="connector mx-auto"></div>
+                    <div class="bg-gray-900 p-4 border-b border-green-500">
+                        <span class="text-green-500 font-bold">Protocol Layer</span>
+                        <div class="text-sm text-gray-400">ZK-Proof System, Merkle Tree Management, Relayer Network</div>
+                    </div>
+                    <div class="connector mx-auto"></div>
+                    <div class="bg-gray-900 p-4 rounded-b-lg">
+                        <span class="text-green-500 font-bold">Blockchain Layer</span>
+                        <div class="text-sm text-gray-400">Solana Programs, Transaction Processing</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl mb-2 mt-6">4.1 Core Components</h3>
+            
+            <h4 class="text-lg mb-1 mt-4">4.1.1 Fixed-Denomination Pools</h4>
+            <p class="mb-4">
+                MASQ utilizes fixed-denomination pools (e.g., 1 SOL, 10 SOL, 100 SOL) to prevent amount correlation attacks. Each pool is a separate 
+                Merkle tree that maintains anonymity set integrity by ensuring all deposits and withdrawals are of identical value.
+            </p>
+            
+            <h4 class="text-lg mb-1 mt-4">4.1.2 Commitment System</h4>
+            <p class="mb-4">
+                When depositing into MASQ, users generate a commitment pair consisting of:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500">Commitment Hash:</span> Public identifier derived from a secret and nullifier</li>
+                <li><span class="text-green-500">Nullifier Hash:</span> Unique identifier used to prevent double-spending without revealing the source</li>
+            </ul>
+            <div class="code-block">
+                <pre><code>commitmentHash = Poseidon(nullifier, secret)
+nullifierHash = Poseidon(nullifier)</code></pre>
+            </div>
+            
+            <h4 class="text-lg mb-1 mt-4">4.1.3 Merkle Tree Implementation</h4>
+            <p class="mb-4">
+                MASQ employs an optimized Merkle tree structure with the following characteristics:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Depth: 20-32 levels (configurable per pool)</li>
+                <li>Hashing Function: Poseidon optimized for zk-SNARK efficiency</li>
+                <li>Concurrent Updates: Utilizing Solana's concurrent transaction processing</li>
+            </ul>
+            <p class="mb-4">
+                The Merkle tree structure enables efficient proof verification while maintaining the full anonymity set of all deposits.
+            </p>
+            
+            <h4 class="text-lg mb-1 mt-4">4.1.4 Relayer Network</h4>
+            <p class="mb-4">
+                To enhance privacy and prevent wallet address correlation, MASQ implements a decentralized relayer network that:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Submits withdrawal transactions on behalf of users</li>
+                <li>Rotates automatically to prevent centralization</li>
+                <li>Utilizes economic incentives to ensure reliable service</li>
+                <li>Employs additional obfuscation techniques to prevent timing attacks</li>
+            </ul>
+            
+            <p class="mt-6">
+                All components are designed with maximum efficiency to leverage Solana's high-performance characteristics while ensuring 
+                robust privacy guarantees.
+            </p>
+        </section>
+
+        <!-- Mechanism Design -->
+        <section id="mechanism" class="section py-10">
+            <h2 class="text-2xl mb-4">5. Mechanism Design</h2>
+            <p class="mb-4">
+                MASQ's mechanism design focuses on ensuring strong privacy guarantees while maintaining economic efficiency and security.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">5.1 Pool Liquidity and Anonymity Sets</h3>
+            <p class="mb-4">
+                The effectiveness of any privacy mixer is directly correlated with the size of its anonymity sets. MASQ addresses this through:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Bootstrapped Liquidity:</span> Initial anonymity sets are created to provide immediate privacy benefits</li>
+                <li><span class="text-green-500 font-bold">Fee Structure:</span> A portion of fees is allocated to maintaining and growing anonymity sets</li>
+                <li><span class="text-green-500 font-bold">Cross-Pool Sharing:</span> Advanced techniques to share anonymity strength across denomination pools</li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">5.2 Anti-Temporal Analysis</h3>
+            <p class="mb-4">
+                MASQ incorporates multiple mechanisms to defeat temporal correlation attacks:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Randomized Processing:</span> Withdrawals are processed with variable timing to break predictable patterns</li>
+                <li><span class="text-green-500 font-bold">Timelock Options:</span> Users can specify minimum wait periods before withdrawals are processed</li>
+                <li><span class="text-green-500 font-bold">Batch Processing:</span> Multiple withdrawals are batched together to increase timing ambiguity</li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">5.3 Fee Structure</h3>
+            <p class="mb-4">
+                MASQ implements a sustainable fee structure optimized for long-term privacy provision:
+            </p>
+            <table class="w-full">
+                <tr>
+                    <th>Fee Component</th>
+                    <th>Allocation</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Base Fee</td>
+                    <td>0.1%</td>
+                    <td>Protocol maintenance and development</td>
+                </tr>
+                <tr>
+                    <td>Relayer Fee</td>
+                    <td>0.05%</td>
+                    <td>Compensate relayers for transaction submission</td>
+                </tr>
+                <tr>
+                    <td>Anonymity Enhancement</td>
+                    <td>0.05%</td>
+                    <td>Growing anonymity sets and cover traffic generation</td>
+                </tr>
+            </table>
+            <p class="text-sm text-gray-400 mt-2">
+                * All fees are capped at 0.2% total regardless of transaction size, ensuring privacy remains economically accessible.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">5.4 Relayer Mechanics</h3>
+            <p class="mb-4">
+                The relayer network is a critical component of MASQ's privacy architecture:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Decentralized Selection:</span> Relayers are selected through a verifiable random function</li>
+                <li><span class="text-green-500 font-bold">Stake Requirements:</span> Relayers must stake SOL to participate, creating economic alignment</li>
+                <li><span class="text-green-500 font-bold">Performance Monitoring:</span> Reliability and speed metrics ensure optimal service</li>
+                <li><span class="text-green-500 font-bold">Anti-Censorship Measures:</span> Multiple backup relayers prevent censorship of valid withdrawals</li>
+            </ul>
+            
+            <p class="mt-4">
+                These mechanism designs work in concert to create a robust privacy system that maintains strong guarantees while addressing the 
+                economic and practical considerations necessary for widespread adoption.
+            </p>
+        </section>
+
+        <!-- Zero-Knowledge Implementation -->
+        <section id="zk-implementation" class="section py-10">
+            <h2 class="text-2xl mb-4">6. Zero-Knowledge Implementation</h2>
+            <p class="mb-4">
+                MASQ utilizes advanced zero-knowledge proof systems to enable privacy while maintaining security. After careful evaluation of available options, 
+                MASQ has implemented zk-SNARKs optimized specifically for the Solana virtual machine.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">6.1 zk-SNARK Selection Rationale</h3>
+            <p class="mb-4">
+                While both zk-SNARKs and zk-STARKs were considered, zk-SNARKs were selected for MASQ due to:
+            </p>
+            
+            <table class="w-full">
+                <tr>
+                    <th>Characteristic</th>
+                    <th>zk-SNARKs</th>
+                    <th>zk-STARKs</th>
+                </tr>
+                <tr>
+                    <td>Proof Size</td>
+                    <td class="text-green-500">Compact (∼288 bytes)</td>
+                    <td>Larger (∼45-200 KB)</td>
+                </tr>
+                <tr>
+                    <td>Verification Speed</td>
+                    <td class="text-green-500">Fast (~10ms)</td>
+                    <td>Moderate (∼30-100ms)</td>
+                </tr>
+                <tr>
+                    <td>On-chain Efficiency</td>
+                    <td class="text-green-500">Excellent for Solana</td>
+                    <td>Less optimal for current Solana VMs</td>
+                </tr>
+                <tr>
+                    <td>Setup Requirement</td>
+                    <td>Trusted setup required</td>
+                    <td class="text-green-500">No trusted setup</td>
+                </tr>
+            </table>
+            
+            <p class="text-sm text-gray-400 mt-2">
+                * MASQ addresses the trusted setup requirement through an advanced multi-party computation ceremony 
+                with over 100 participants.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">6.2 Circuit Design</h3>
+            <p class="mb-4">
+                MASQ's zero-knowledge circuits are designed for efficiency and security:
+            </p>
+            <div class="code-block">
+                <pre><code>// Core components of the MASQ zero-knowledge circuit
+function generateProof(
+  secretKey,        // User's secret
+  nullifier,        // Unique nullifier
+  recipient,        // Recipient address
+  merkleRoot,       // Current state of the Merkle tree
+  merkleProof       // Proof of inclusion
+) {
+  // Verify that the commitment exists in the tree
+  assert(verifyMerkleProof(commitmentHash, merkleProof, merkleRoot));
+  
+  // Verify the nullifier is correctly derived
+  assert(nullifierHash === Poseidon(nullifier));
+  
+  // Verify the commitment is correctly formed
+  assert(commitmentHash === Poseidon(nullifier, secretKey));
+  
+  // Return the proof
+  return {
+    nullifierHash,   // Public: Used to prevent double-spending
+    rootHash,        // Public: Current Merkle root for verification
+    recipient,       // Public: Destination for withdrawn funds
+    proof            // Zero-knowledge proof that all conditions are satisfied
+  };
+}</code></pre>
+            </div>
+            
+            <h3 class="text-xl mb-2 mt-6">6.3 Cryptographic Primitives</h3>
+            <p class="mb-4">
+                MASQ utilizes the following cryptographic primitives, optimized for the Solana environment:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Hash Function:</span> Poseidon hash (optimized for zk-SNARKs)</li>
+                <li><span class="text-green-500 font-bold">Elliptic Curve:</span> alt_bn128 (balancing security and efficiency)</li>
+                <li><span class="text-green-500 font-bold">Encryption:</span> ElGamal encryption for optional viewing keys</li>
+                <li><span class="text-green-500 font-bold">Commitment Scheme:</span> Pedersen commitments for balance confidentiality</li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">6.4 Solana-Specific Optimizations</h3>
+            <p class="mb-4">
+                MASQ implements several optimizations specific to the Solana blockchain:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Proof Verification Parallelization:</span> Utilizing Solana's parallel processing capabilities</li>
+                <li><span class="text-green-500 font-bold">Compressed State Management:</span> Leveraging Solana's account model for efficient state storage</li>
+                <li><span class="text-green-500 font-bold">Compute Budget Optimization:</span> Careful management of Solana's compute units for cost efficiency</li>
+            </ul>
+            
+            <p class="mt-4">
+                These optimizations ensure that MASQ's zero-knowledge implementation remains efficient and cost-effective while providing 
+                strong privacy guarantees.
+            </p>
+        </section>
+
+        <!-- How MASQ Works -->
+        <section id="how-masq-works" class="section py-10">
+            <h2 class="text-2xl mb-4">7. How MASQ Works</h2>
+            <p class="mb-4">
+                MASQ operates in a straightforward three-step process from the user's perspective, while handling significant complexity behind the scenes.
+            </p>
+            
+            <div class="mt-8 mb-4">
+                <h3 class="flex items-center text-xl mb-4">
+                    <span class="step-number">1</span>
+                    Connect & Deposit
+                </h3>
+                <p class="mb-4 ml-10">
+                    The user connects their Solana wallet and deposits into a fixed-denomination pool. During this process,
+                    the system generates cryptographically secure commitment credentials that will be needed for withdrawal.
+                </p>
+                <div class="code-block ml-10">
+                    <pre><code>const masqClient = await MasqClient.connect(wallet);
+const { commitmentHash, secrets } = await masqClient.generateCommitment();
+const tx = await masqClient.deposit({
+  pool: "sol_1",
+  amount: new BN(1_000_000_000), // 1 SOL
+  commitmentHash
+});</code></pre>
+                </div>
+                <p class="text-sm text-gray-400 mt-2 ml-10">
+                    * The user must securely store the returned secrets, as they will be required to withdraw funds.
+                </p>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <div class="mt-8 mb-4">
+                <h3 class="flex items-center text-xl mb-4">
+                    <span class="step-number">2</span>
+                    MASQ Mixes Your Funds
+                </h3>
+                <div class="diagram ml-10">
+                    <div class="diagram-header">ZK-Powered Mixing Engine</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="mb-2 text-green-500">1. Deposit</div>
+                            <div class="bg-gray-800 p-2 rounded">
+                                Commitment added to Merkle tree
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="mb-2 text-green-500">2. Mix</div>
+                            <div class="bg-gray-800 p-2 rounded">
+                                Randomized timing & batching
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="mb-2 text-green-500">3. Verify</div>
+                            <div class="bg-gray-800 p-2 rounded">
+                                Nullifier ensures one-time withdrawal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mb-4 ml-10">
+                    Behind the scenes, MASQ creates a Merkle tree with all deposits. Funds join a pool of identical inputs, making 
+                    them indistinguishable from each other. The protocol implements randomized timing and generates a nullifier 
+                    that ensures each deposit can only be withdrawn once while maintaining privacy.
+                </p>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <div class="mt-8">
+                <h3 class="flex items-center text-xl mb-4">
+                    <span class="step-number">3</span>
+                    Withdraw to Any Address
+                </h3>
+                <p class="mb-4 ml-10">
+                    When ready to withdraw, the user can retrieve their funds to any Solana address. By generating a zero-knowledge proof,
+                    they demonstrate ownership of deposited funds without revealing which specific deposit is being withdrawn.
+                </p>
+                <div class="code-block ml-10">
+                    <pre><code>const recipientWallet = new Wallet(...);
+const masqClient = await MasqClient.connect(recipientWallet);
+const proof = await masqClient.generateWithdrawalProof({
+  secrets,
+  recipient: recipientWallet.publicKey,
+  pool: "sol_1"
+});
+const tx = await masqClient.withdraw({ proof });</code></pre>
+                </div>
+                <p class="mb-4 ml-10">
+                    No link to the original deposit remains, providing complete unlinkability between the deposit and withdrawal transactions.
+                    This unlinkability is cryptographically guaranteed by the zero-knowledge proof system.
+                </p>
+            </div>
+            
+            <p class="mt-6">
+                This three-step process provides strong privacy guarantees while maintaining an intuitive user experience. Advanced users 
+                can also utilize additional features such as custom timing, optional transaction memos, and viewing keys for regulatory compliance.
+            </p>
+        </section>
+
+        <!-- Security Considerations -->
+        <section id="security" class="section py-10">
+            <h2 class="text-2xl mb-4">8. Security Considerations</h2>
+            <p class="mb-4">
+                MASQ's security model addresses multiple threat vectors to ensure robust privacy protection and funds safety.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">8.1 Threat Model</h3>
+            <p class="mb-4">
+                MASQ's security design considers the following adversarial capabilities:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Chain Analysis:</span> Adversaries with complete blockchain data</li>
+                <li><span class="text-green-500 font-bold">Timing Analysis:</span> Ability to observe transaction timing patterns</li>
+                <li><span class="text-green-500 font-bold">Network Surveillance:</span> Monitoring of mempool and transaction propagation</li>
+                <li><span class="text-green-500 font-bold">Active Participation:</span> Adversaries depositing and withdrawing from the protocol</li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">8.2 Security Guarantees</h3>
+            <table class="w-full">
+                <tr>
+                    <th>Security Property</th>
+                    <th>Guarantee</th>
+                </tr>
+                <tr>
+                    <td>Transaction Unlinkability</td>
+                    <td>Cryptographically guaranteed by zk-SNARKs</td>
+                </tr>
+                <tr>
+                    <td>Double-Spending Prevention</td>
+                    <td>Ensured by nullifier mechanism</td>
+                </tr>
+                <tr>
+                    <td>Timing Attack Resistance</td>
+                    <td>Protected by randomized processing and batching</td>
+                </tr>
+                <tr>
+                    <td>Funds Safety</td>
+                    <td>Secured by Solana's consensus and program verification</td>
+                </tr>
+                <tr>
+                    <td>Front-running Protection</td>
+                    <td>Enhanced by relayer encryption and design</td>
+                </tr>
+            </table>
+            
+            <h3 class="text-xl mb-2 mt-6">8.3 Audit Status</h3>
+            <p class="mb-4">
+                MASQ has undergone comprehensive security audits by leading firms specializing in zero-knowledge cryptography and Solana development:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li><span class="text-green-500 font-bold">Smart Contract Audit:</span> Completed by Kudelski Security (April 2025)</li>
+                <li><span class="text-green-500 font-bold">Cryptographic Implementation:</span> Verified by Trail of Bits (March 2025)</li>
+                <li><span class="text-green-500 font-bold">zk-SNARK Circuits:</span> Reviewed by ZK Audit Collective (February 2025)</li>
+            </ul>
+            <p>All identified issues have been addressed prior to mainnet launch. Audit reports are available on the MASQ website.</p>
+            
+            <h3 class="text-xl mb-2 mt-6">8.4 Known Limitations</h3>
+            <p class="mb-4">
+                While MASQ provides strong privacy guarantees, users should be aware of the following limitations:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Privacy benefits scale with pool liquidity and user base growth</li>
+                <li>Maximum anonymity requires following recommended operational security practices</li>
+                <li>Perfect privacy cannot be guaranteed against global passive adversaries with advanced capabilities</li>
+            </ul>
+            
+            <p class="mt-4">
+                MASQ's security model is designed to provide strong practical privacy while being transparent about limitations.
+                The protocol will continue to evolve with enhanced security measures as both threats and privacy technologies advance.
+            </p>
+        </section>
+
+        <!-- Comparison with Other Solutions -->
+        <section id="comparison" class="section py-10">
+            <h2 class="text-2xl mb-4">9. Comparison with Other Solutions</h2>
+            <p class="mb-4">
+                MASQ represents a significant advancement over existing privacy solutions. The following comparison illustrates
+                key differences between MASQ and other prominent privacy technologies.
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <tr>
+                        <th>Feature</th>
+                        <th class="masq-column">MASQ</th>
+                        <th>Tornado Cash</th>
+                        <th>Railgun</th>
+                        <th>Others</th>
+                    </tr>
+                    <tr>
+                        <td>Blockchain</td>
+                        <td class="masq-column">Solana</td>
+                        <td>Ethereum</td>
+                        <td>Ethereum & EVM</td>
+                        <td>Various</td>
+                    </tr>
+                    <tr>
+                        <td>Transaction Speed</td>
+                        <td class="masq-column">3–5 seconds</td>
+                        <td>Minutes to hours</td>
+                        <td>Minutes</td>
+                        <td>Variable</td>
+                    </tr>
+                    <tr>
+                        <td>Fee Structure</td>
+                        <td class="masq-column">Ultra-low (&lt; $0.01)</td>
+                        <td>High ($5–100+)</td>
+                        <td>Medium–High</td>
+                        <td>Variable</td>
+                    </tr>
+                    <tr>
+                        <td>Privacy Technology</td>
+                        <td class="masq-column">ZK + Randomized Timing</td>
+                        <td>ZK-SNARKs</td>
+                        <td>ZK-SNARKs</td>
+                        <td>Various</td>
+                    </tr>
+                    <tr>
+                        <td>Rotating Relayers</td>
+                        <td class="masq-column">Yes</td>
+                        <td>No</td>
+                        <td>Limited</td>
+                        <td>Rarely</td>
+                    </tr>
+                    <tr>
+                        <td>Anti-Temporal Analysis</td>
+                        <td class="masq-column">Advanced</td>
+                        <td>Basic</td>
+                        <td>Limited</td>
+                        <td>Basic/None</td>
+                    </tr>
+                    <tr>
+                        <td>User Interface</td>
+                        <td class="masq-column">Streamlined</td>
+                        <td>Complex</td>
+                        <td>Moderate</td>
+                        <td>Variable</td>
+                    </tr>
+                    <tr>
+                        <td>Regulatory Design</td>
+                        <td class="masq-column">Privacy-by-design</td>
+                        <td>Sanctioned</td>
+                        <td>Mixed</td>
+                        <td>Variable</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <p class="text-gray-300 italic mt-4">
+                "MASQ doesn't just iterate on existing privacy solutions—it fundamentally reimagines what's possible when privacy meets Solana's performance."
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">9.1 Key Advantages</h3>
+            <p class="mb-4">
+                MASQ's approach offers several material advantages over existing privacy solutions:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>
+                    <span class="text-green-500 font-bold">Performance-Privacy Balance:</span> 
+                    MASQ uniquely balances high-performance with strong privacy, avoiding the typical tradeoffs in existing solutions
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Economic Accessibility:</span> 
+                    Ultra-low fees make privacy accessible to all users regardless of transaction size
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Enhanced Temporal Protection:</span> 
+                    Advanced randomization techniques provide protection against sophisticated timing analysis
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Forward-Compatible Design:</span> 
+                    Architecture enables seamless integration of future privacy enhancements and Solana protocol improvements
+                </li>
+            </ul>
+        </section>
+
+        <!-- Regulatory Approach -->
+        <section id="regulatory" class="section py-10">
+            <h2 class="text-2xl mb-4">10. Regulatory Approach</h2>
+            <p class="mb-4">
+                MASQ employs a "privacy-by-design" approach that respects both user privacy rights and legitimate regulatory concerns.
+            </p>
+            
+            <h3 class="text-xl mb-2 mt-6">10.1 Privacy as a Right</h3>
+            <p class="mb-4">
+                MASQ is built on the foundational principle that financial privacy is a fundamental right. The protocol enables:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Protection from surveillance capitalism</li>
+                <li>Security against targeting based on wealth</li>
+                <li>Freedom from financial profiling</li>
+                <li>Control over personal financial information</li>
+            </ul>
+            
+            <h3 class="text-xl mb-2 mt-6">10.2 Compliance Features</h3>
+            <p class="mb-4">
+                While preserving privacy as the default, MASQ incorporates several features that enable optional compliance:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>
+                    <span class="text-green-500 font-bold">Viewing Keys:</span> 
+                    Optional keys that users can generate and provide to auditors or regulators
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Compliance Reporting:</span> 
+                    Self-reporting tools for users who need to document transaction histories
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Transaction Memos:</span> 
+                    Optional encrypted transaction information for record-keeping
+                </li>
+            </ul>
+            
+            <div class="code-block">
+                <pre><code>// Example of generating a viewing key
+const viewingKey = await masqClient.generateViewingKey({
+  transactions: ['tx_id_1', 'tx_id_2'],
+  recipient: auditorPublicKey
+});</code></pre>
+            </div>
+            
+            <h3 class="text-xl mb-2 mt-6">10.3 Industry Engagement</h3>
+            <p class="mb-4">
+                MASQ actively participates in regulatory discussions and industry groups focused on balancing privacy with compliance:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>Member of the Blockchain Privacy Working Group</li>
+                <li>Participant in the Financial Action Task Force (FATF) public consultations</li>
+                <li>Regular engagement with privacy-focused legal scholars and regulatory experts</li>
+            </ul>
+            
+            <p class="mt-4">
+                This balanced approach ensures that MASQ provides strong privacy guarantees while remaining adaptable to evolving 
+                regulatory frameworks, avoiding the sanctions and restrictions that have affected other privacy technologies.
+            </p>
+        </section>
+
+        <!-- Roadmap -->
+        <section id="roadmap" class="section py-10">
+            <h2 class="text-2xl mb-4">11. Roadmap</h2>
+            <p class="mb-4">
+                MASQ development follows a phased approach to ensure security, stability, and continuous improvement of the protocol.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+                <div class="p-4 bg-gray-900 rounded border-l-4 border-green-500">
+                    <h4 class="text-green-500 mb-2">Phase 1: Foundation</h4>
+                    <p class="text-gray-300 text-sm">Q1-Q2 2025</p>
+                    <ul class="mt-2 text-sm space-y-1">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i> Core protocol development
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i> Security audits
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i> Testnet deployment
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i> Initial UI/SDK release
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="p-4 bg-gray-900 rounded border-l-4 border-yellow-500">
+                    <h4 class="text-green-500 mb-2">Phase 2: Growth</h4>
+                    <p class="text-gray-300 text-sm">Q3-Q4 2025</p>
+                    <ul class="mt-2 text-sm space-y-1">
+                        <li class="flex items-center">
+                            <i class="fas fa-spinner text-yellow-500 mr-2"></i> Mainnet launch
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-spinner text-yellow-500 mr-2"></i> Relayer network expansion
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-spinner text-yellow-500 mr-2"></i> Mobile app development
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-spinner text-yellow-500 mr-2"></i> SPL token support
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="p-4 bg-gray-900 rounded border-l-4 border-blue-500">
+                    <h4 class="text-green-500 mb-2">Phase 3: Expansion</h4>
+                    <p class="text-gray-300 text-sm">Q1-Q2 2026</p>
+                    <ul class="mt-2 text-sm space-y-1">
+                        <li class="flex items-center">
+                            <i class="fas fa-clock text-blue-500 mr-2"></i> Cross-chain bridges
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock text-blue-500 mr-2"></i> Private DeFi integrations
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock text-blue-500 mr-2"></i> Enhanced cryptographic libraries
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock text-blue-500 mr-2"></i> Enterprise privacy solutions
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="p-4 bg-gray-900 rounded border-l-4 border-purple-500">
+                    <h4 class="text-green-500 mb-2">Phase 4: Innovation</h4>
+                    <p class="text-gray-300 text-sm">Q3 2026+</p>
+                    <ul class="mt-2 text-sm space-y-1">
+                        <li class="flex items-center">
+                            <i class="fas fa-lightbulb text-purple-500 mr-2"></i> ZK VM implementation
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-lightbulb text-purple-500 mr-2"></i> Private smart contracts
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-lightbulb text-purple-500 mr-2"></i> Quantum resistance research
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-lightbulb text-purple-500 mr-2"></i> Advanced regulatory tools
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p class="mt-8">
+                The roadmap is designed to be responsive to community feedback, technological advancements, and regulatory developments.
+                Specific timelines may adjust based on these factors, with security and privacy quality remaining the top priorities.
+            </p>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion" class="section py-10">
+            <h2 class="text-2xl mb-4">12. Conclusion</h2>
+            <p class="mb-4">
+                MASQ represents a significant advancement in blockchain privacy technology, providing a solution that combines:
+            </p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>
+                    <span class="text-green-500 font-bold">Performance:</span> 
+                    Leveraging Solana's high throughput and low latency for near-instant private transactions
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Accessibility:</span> 
+                    Ultra-low fees making privacy available to all users, not just those with significant resources
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Security:</span> 
+                    Advanced cryptographic techniques providing strong privacy guarantees
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Usability:</span> 
+                    Intuitive interface reducing friction for privacy adoption
+                </li>
+                <li>
+                    <span class="text-green-500 font-bold">Sustainability:</span> 
+                    Forward-compatible design that can evolve with the regulatory landscape
+                </li>
+            </ul>
+            
+            <p class="mb-4">
+                By addressing the limitations of existing privacy solutions, MASQ establishes a new standard for on-chain privacy that 
+                balances individual rights with systemic responsibilities. The technology enables financial privacy to be accessible 
+                to a broader audience than ever before, helping to preserve this fundamental right in the digital age.
+            </p>
+            
+            <p class="mb-4">
+                As blockchain technology continues to evolve and adoption increases, privacy will become an increasingly critical component 
+                of the ecosystem. MASQ is positioned to lead this privacy evolution on Solana, providing a foundation for a new generation 
+                of privacy-preserving applications and use cases.
+            </p>
+            
+            <blockquote class="mb-4">
+                "Privacy isn't a feature. It's your right." — MASQ Protocol
+            </blockquote>
+        </section>
+
+        <!-- References -->
+        <section id="references" class="section py-10">
+            <h2 class="text-2xl mb-4">13. References</h2>
+            <p class="mb-4">
+                This whitepaper builds upon research from multiple fields including cryptography, distributed systems, and privacy engineering.
+            </p>
+            
+            <ol class="list-decimal pl-6 space-y-2">
+                <li>
+                    Bernstein, D.J., Duif, N., Lange, T., Schwabe, P., Yang, B.Y. (2012). "High-speed high-security signatures."
+                    <span class="text-gray-400">Journal of Cryptographic Engineering, 2(2), pp.77-89.</span>
+                </li>
+                <li>
+                    E. Ben-Sasson, A. Chiesa, E. Tromer, M. Virza. (2014). "Succinct Non-Interactive Zero Knowledge for a von Neumann Architecture."
+                    <span class="text-gray-400">USENIX Security Symposium.</span>
+                </li>
+                <li>
+                    Solana Foundation. (2024). "Zero-Knowledge Proofs | Solana Program Library Docs."
+                    <span class="text-gray-400">https://spl.solana.com/confidential-token/deep-dive/zkps</span>
+                </li>
+                <li>
+                    Helius. (2024). "Zero-Knowledge Proofs: Its Applications on Solana."
+                    <span class="text-gray-400">https://www.helius.dev/blog/zero-knowledge-proofs-its-applications-on-solana</span>
+                </li>
+                <li>
+                    Chainalysis. (2024). "Crypto Mixers and AML Compliance."
+                    <span class="text-gray-400">https://www.chainalysis.com/blog/crypto-mixers/</span>
+                </li>
+                <li>
+                    Pedersen, T.P. (1991). "Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing."
+                    <span class="text-gray-400">CRYPTO '91.</span>
+                </li>
+                <li>
+                    Buterin, V. (2022). "An incomplete guide to rollups."
+                    <span class="text-gray-400">Ethereum Foundation Blog.</span>
+                </li>
+                <li>
+                    Yakovenko, A. (2018). "Solana: A new architecture for a high performance blockchain."
+                    <span class="text-gray-400">Whitepaper.</span>
+                </li>
+                <li>
+                    Goldwasser, S., Micali, S., Rackoff, C. (1989). "The knowledge complexity of interactive proof-systems."
+                    <span class="text-gray-400">SIAM Journal on Computing, 18(1), pp.186-208.</span>
+                </li>
+                <li>
+                    Bünz, B., Bootle, J., Boneh, D., Poelstra, A., Wuille, P., Maxwell, G. (2018). "Bulletproofs: Short Proofs for Confidential Transactions and More."
+                    <span class="text-gray-400">IEEE Symposium on Security and Privacy (SP).</span>
+                </li>
+            </ol>
+        </section>
+
+        <footer class="py-10 text-center text-gray-400">
+            <p>© 2025 MASQ Protocol</p>
+            <p class="mt-2 text-sm">"Privacy isn't a feature. It's your right."</p>
+        </footer>
+    </div>
+</body>
+</html>
